@@ -113,110 +113,101 @@ except:
 HEAD()
 cPORTS=sIMP
 print(HEAD)
-for PORT in range(sIMP, eIMP+1):
-    ImpFork = os.fork()
-    if ImpFork == 0:
-        class WebImp(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
+class WebDevil(SocketServer.ThreadingMixIn, BaseHTTPServer.BaseHTTPRequestHandler):
+    set_proc_name(pPROC_NAME)
 
-            # Set the CGI directory
-            CGIHTTPServer.CGIHTTPRequestHandler.cgi_directories = [CGI_LOCAL_PATH]    
+    # Spoof Some Server info
+    server_version = 'WebDevil'
+    sys_version = VERSION
+    error_message_format = 'User Error Detected ;-)'
+    print('WebDevil: Loaded Successfully')
 
-            # Spoof Some Server info
-            server_version = 'WebDevil'
-            sys_version = VERSION
-            error_message_format = 'User Error Detected ;-)'
-
-            def do_GET(self):
-
-                # Spoof Some Server info
-                self.server_version = 'WebDevil'
-                self.sys_version = VERSION
-
-                # Home Page
-                if self.path == '/':
-                    self.send_response(200)
-                    self.send_header("Content-type", "text/html")
-                    self.end_headers()
-                    self.wfile.write(open('index.html', 'r').read())
-
-            def do_DELETE(self):
-
-                # Spoof Some Server info
-                self.server_version = 'WebDevil'
-                self.sys_version = VERSION
-                self.wfile.write('User error detected ;-)')
-
-                self.send_response(200)
-                self.send_header("Content-type", "text/html")
-                self.end_headers()
-                self.wfile.write('User error detected ;-)')
-
-            def do_PUT(self):
-
-                # Spoof Some Server info
-                self.server_version = 'WebDevil'
-                self.sys_version = VERSION
-                self.wfile.write('User error detected ;-)')
-
-            def do_POST(self):
-
-                # Spoof Some Server info
-                self.server_version = 'WebDevil'
-                self.sys_version = VERSION
-                self.wfile.write('User error detected ;-)')
-
-                self.send_response(200)
-                self.send_header("Content-type", "text/html")
-                self.end_headers()
-                self.wfile.write('User error detected ;-)')
-
-        set_proc_name(cPROC_NAME)
-        ImpDaemon = WebImp((SERVER_ADDRESS, PORT), CGIHTTPServer.CGIHTTPRequestHandler)
-        while True:
-            try:
-                print('WebDevil: Loading '+cPROC_NAME+': '+SERVER_ADDRESS+':'+str(PORT))
-                ImpDaemon.handle_request()
-                print('WebDevil: Reloading '+cPROC_NAME+': '+SERVER_ADDRESS+':'+str(PORT))
-            except:
-                print('WebDevil: '+cPROC_NAME+' Failed Reload: '+SERVER_ADDRESS+':'+str(PORT))
-                pass
-
-
-
-if SERVER_PORT != sIMP:
-    class WebDevil(SocketServer.ThreadingMixIn, BaseHTTPServer.BaseHTTPRequestHandler):
+    def do_GET(self):
 
         # Spoof Some Server info
-        server_version = 'WebDevil'
-        sys_version = VERSION
-        error_message_format = 'User Error Detected ;-)'
-        print('WebDevil: Loaded Successfully')
+        self.server_version = 'WebDevil'
+        self.sys_version = VERSION
 
-        def do_GET(self):
+        global cPORTS
+        PATH = self.path
+
+        # Redirect if not requesting files
+        if not 'tgz' in PATH:
+            if cPORTS > eIMP:
+                cPORTS=sIMP
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.wfile.write('<html><META HTTP-EQUIV="REFRESH" CONTENT="0; URL=http://'+SERVER_DOMAIN+':'+str(cPORTS)+PATH+'"></html>')
+            cPORTS+=1
+
+
+
+class WebImp(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
+
+    # Set the CGI directory
+    CGIHTTPServer.CGIHTTPRequestHandler.cgi_directories = [CGI_LOCAL_PATH]    
+
+    # Spoof Some Server info
+    server_version = 'WebDevil'
+    sys_version = VERSION
+    error_message_format = 'User Error Detected ;-)'
+
+    def do_GET(self):
+
+        # Spoof Some Server info
+        self.server_version = 'WebDevil'
+        self.sys_version = VERSION
+
+        # Home Page
+        if self.path == '/':
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.wfile.write(open('index.html', 'r').read())
+
+        def do_DELETE(self):
 
             # Spoof Some Server info
             self.server_version = 'WebDevil'
             self.sys_version = VERSION
+            self.wfile.write('User error detected ;-)')
 
-            global cPORTS
-            PATH = self.path
-            set_proc_name(pPROC_NAME)
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.wfile.write('User error detected ;-)')
 
-            # Redirect if not requesting files
-            if not 'tgz' in PATH:
-                if cPORTS > eIMP:
-                    cPORTS=sIMP
-                self.send_response(200)
-                self.send_header("Content-type", "text/html")
-                self.end_headers()
-                self.wfile.write('<html><META HTTP-EQUIV="REFRESH" CONTENT="0; URL=http://'+SERVER_DOMAIN+':'+str(cPORTS)+PATH+'"></html>')
-                cPORTS+=1
+        def do_PUT(self):
 
-    DevilDaemon = BaseHTTPServer.HTTPServer((SERVER_ADDRESS, SERVER_PORT), WebDevil)
-    try:
-        DevilDaemon.serve_forever()
-    except:
-        os.system('pkill WebImp')
+            # Spoof Some Server info
+            self.server_version = 'WebDevil'
+            self.sys_version = VERSION
+            self.wfile.write('User error detected ;-)')
+
+        def do_POST(self):
+
+            # Spoof Some Server info
+            self.server_version = 'WebDevil'
+            self.sys_version = VERSION
+            self.wfile.write('User error detected ;-)')
+
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.wfile.write('User error detected ;-)')
+
+if SERVER_PORT == sIMP:
+    ImpDaemon = WebImp((SERVER_ADDRESS, SERVER_PORT), CGIHTTPServer.CGIHTTPRequestHandler)
+    while True:
+            ImpDaemon.handle_request()
 else:
-    raw_input('WebDevil: press enter to exit\n')
-    os.system('pkill WebDevil')
+    for PORT in range(sIMP, eIMP+1):
+        ImpFork = os.fork()
+        if ImpFork == 0:
+            set_proc_name(cPROC_NAME)
+            ImpDaemon = WebImp((SERVER_ADDRESS, PORT), CGIHTTPServer.CGIHTTPRequestHandler)
+            ImpDaemon.serve_forever()
+    DevilDaemon = BaseHTTPServer.HTTPServer((SERVER_ADDRESS, SERVER_PORT), WebDevil)
+    while True:
+        DevilDaemon.handle_request()
