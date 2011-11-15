@@ -1,0 +1,224 @@
+#!/usr/bin/env python
+RED = '\033[1;31m'
+YELLOW = '\033[1;33m'
+UNCOLOUR = '\033[0;0m'
+def HEAD():
+    print('')                                                                  
+    print(YELLOW+'  ||   / |  / /                '+RED+'   //    ) )                       '+UNCOLOUR)
+    print(YELLOW+'  ||  /  | / /   __     / __   '+RED+'  //    / /  ___             ( ) //'+UNCOLOUR)  
+    print(YELLOW+'  || / /||/ / //___) ) //   ) )'+RED+' //    / / //___) ) ||  / / / / // '+UNCOLOUR)  
+    print(YELLOW+'  ||/ / |  / //       //   / /'+RED+' //    / / //        || / / / / //  '+UNCOLOUR)  
+    print(YELLOW+'  |  /  | / ((____   ((___/ / '+RED+'//____/ / ((____     ||/ / / / //   '+UNCOLOUR) 
+    print('')
+
+USAGE="""
+SYNOPSIS:
+
+        $1 == SERVER_ADDRESS $2 == SERVER_PORT $3 == SERVER_DOMAIN   
+        $4 == IMP[{'[T/t]rue, [START_PORT, END_PORT]'|[F/f]alse}]     
+        $5 == WWW_LOCAL_PATH $6 == CGI_LOCAL_PATH $7 == DEBUG[{[T/t]rue|[F/f]alse]}]                                
+     """
+
+import os;import sys;import socket;import urllib2;import SocketServer
+import CGIHTTPServer;import BaseHTTPServer;from datetime import datetime
+from random import randrange as Rr
+
+VERSION=str(Rr(0,100))+'.'+str(Rr(0,100))+'.'+str(Rr(0,100))
+def set_proc_name(newname):
+    from ctypes import cdll, byref, create_string_buffer
+    libc = cdll.LoadLibrary('libc.so.6')
+    buff = create_string_buffer(len(newname)+1)
+    buff.value = newname
+    libc.prctl(15, byref(buff), 0, 0, 0)
+
+OPT=sys.argv
+EXIT=sys.exit
+
+# Configure Server Address
+try:
+    SERVER_ADDRESS=OPT[1]
+except:
+    HEAD()
+    EXIT(USAGE)
+
+# Configure Server Port
+try:
+    SERVER_PORT=int(OPT[2])
+except:
+    HEAD()
+    EXIT(USAGE)
+
+# Configure Server Domain
+try:
+    SERVER_DOMAIN=OPT[3]
+except:
+    HEAD()
+    EXIT(USAGE)
+
+# Configure WebDevil/WebImp Service(s)
+try:
+    IMP_CONFIG=OPT[4]
+except:
+    HEAD()
+    EXIT(USAGE)
+try:
+    if 'T' in IMP_CONFIG or 't' in IMP_CONFIG:
+        IMP_CONFIG=IMP_CONFIG.split(', ')
+        sIMP=int(IMP_CONFIG[1])
+        eIMP=int(IMP_CONFIG[2])
+        if sIMP >= eIMP:
+            HEAD()
+            EXIT(USAGE)
+        pPROC_NAME='WebDevil'
+        cPROC_NAME='WebImp'
+    elif 'F' in IMP_CONFIG or 'f' in IMP_CONFIG:
+        sIMP=int(SERVER_PORT)
+        eIMP=int(SERVER_PORT)
+        set_proc_name('WebDevil')
+        pPROC_NAME='WebDevil'
+        cPROC_NAME='WebDevil'
+except:
+    HEAD()
+    EXIT(USAGE)
+
+# Configure WWW_LOCAL_PATH
+try:
+    WWW_LOCAL_PATH=OPT[5]
+    os.chdir(WWW_LOCAL_PATH)
+except:
+    HEAD()
+    EXIT(USAGE)
+
+# Configure CGI_LOCAL_PATH
+try:
+    CGI_LOCAL_PATH=OPT[6]
+except:
+    HEAD()
+    EXIT(USAGE)
+
+# Set Debugging
+try:
+    if 'T' in OPT[7] or 't' in OPT[7]:
+        pass
+    elif 'F' in OPT[7] or 'f' in OPT[7]:
+        sys.tracebacklimit=0
+    else:
+        HEAD()
+        EXIT(USAGE)  
+except:
+    HEAD()
+    EXIT(USAGE)
+
+
+HEAD()
+cPORTS=sIMP
+print(HEAD)
+for PORT in range(sIMP, eIMP+1):
+    ImpFork = os.fork()
+    if ImpFork == 0:
+        class WebImp(SocketServer.ThreadingMixIn, BaseHTTPServer.HTTPServer):
+
+            # Set the CGI directory
+            CGIHTTPServer.CGIHTTPRequestHandler.cgi_directories = [CGI_LOCAL_PATH]    
+
+            # Spoof Some Server info
+            server_version = 'WebDevil'
+            sys_version = VERSION
+            error_message_format = 'User Error Detected ;-)'
+
+            def do_GET(self):
+
+                # Spoof Some Server info
+                self.server_version = 'WebDevil'
+                self.sys_version = VERSION
+
+                # Home Page
+                if self.path == '/':
+                    self.send_response(200)
+                    self.send_header("Content-type", "text/html")
+                    self.end_headers()
+                    self.wfile.write(open('index.html', 'r').read())
+
+            def do_DELETE(self):
+
+                # Spoof Some Server info
+                self.server_version = 'WebDevil'
+                self.sys_version = VERSION
+                self.wfile.write('User error detected ;-)')
+
+                self.send_response(200)
+                self.send_header("Content-type", "text/html")
+                self.end_headers()
+                self.wfile.write('User error detected ;-)')
+
+            def do_PUT(self):
+
+                # Spoof Some Server info
+                self.server_version = 'WebDevil'
+                self.sys_version = VERSION
+                self.wfile.write('User error detected ;-)')
+
+            def do_POST(self):
+
+                # Spoof Some Server info
+                self.server_version = 'WebDevil'
+                self.sys_version = VERSION
+                self.wfile.write('User error detected ;-)')
+
+                self.send_response(200)
+                self.send_header("Content-type", "text/html")
+                self.end_headers()
+                self.wfile.write('User error detected ;-)')
+
+        set_proc_name(cPROC_NAME)
+        ImpDaemon = WebImp((SERVER_ADDRESS, PORT), CGIHTTPServer.CGIHTTPRequestHandler)
+        while True:
+            try:
+                print('WebDevil: Loading '+cPROC_NAME+': '+SERVER_ADDRESS+':'+str(PORT))
+                ImpDaemon.handle_request()
+                print('WebDevil: Reloading '+cPROC_NAME+': '+SERVER_ADDRESS+':'+str(PORT))
+            except:
+                print('WebDevil: '+cPROC_NAME+' Failed Reload: '+SERVER_ADDRESS+':'+str(PORT))
+                pass
+
+
+
+if SERVER_PORT != sIMP:
+    try:
+        class WebDevil(SocketServer.ThreadingMixIn, BaseHTTPServer.BaseHTTPRequestHandler):
+
+            # Spoof Some Server info
+            server_version = 'WebDevil'
+            sys_version = VERSION
+            error_message_format = 'User Error Detected ;-)'
+            print('WebDevil: Loaded Successfully')
+
+            def do_GET(self):
+
+                # Spoof Some Server info
+                self.server_version = 'WebDevil'
+                self.sys_version = VERSION
+
+                global cPORTS
+                PATH = self.path
+                set_proc_name(pPROC_NAME)
+
+                # Redirect if not requesting files
+                if not 'tgz' in PATH:
+                    if cPORTS > eIMP:
+                        cPORTS=sIMP
+                    self.send_response(200)
+                    self.send_header("Content-type", "text/html")
+                    self.end_headers()
+                    self.wfile.write('<html><META HTTP-EQUIV="REFRESH" CONTENT="0; URL=http://'+SERVER_DOMAIN+':'+str(cPORTS)+PATH+'"></html>')
+                    cPORTS+=1
+
+        DevilDaemon = BaseHTTPServer.HTTPServer((SERVER_ADDRESS, SERVER_PORT), WebDevil)
+        DevilDaemon.serve_forever()
+    except:
+        os.system('pkill WebImp')
+else:
+    try:
+        raw_input('WebDevil: press enter to exit\n')
+    except:
+        os.system('pkill WebDevil')

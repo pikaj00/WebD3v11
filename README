@@ -1,0 +1,50 @@
+                                                                 
+||   / |  / /                  //    ) )                         
+||  /  | / / ___     / __     //    / /  ___             ( ) //  
+|| / /||/ ///___) ) //   ) ) //    / / //___) ) ||  / / / / //   
+||/ / |  ///       //   / / //    / / //        || / / / / //    
+|  /  | /((____   ((___/ / //____/ / ((____     ||/ / / / //
+
+
+WebDevil is a decentralized webserver system that aims to keep
+webserver code open, powerful, and easy to redistribute. By
+sharing your webdevil gitdb with others you help to ensure this
+and keep the power in the hands of the people and freemarket.
+
+1.) ./configure
+2.) ./share_gitdb
+3.) ip addr add "`cat conf/gitd_ip`"/32 dev lo &
+4.) email d3v11 at webdevil@d3v11.ano :-)
+
+SYNOPSIS:
+    
+    Choose the IP address:
+        $1 == SERVER_ADDRESS
+            ie: 127.0.0.1        
+
+    Select the main port:    
+        $2 == SERVER_PORT
+            ie: 80
+
+    Choose your domain:    
+        $3 == SERVER_DOMAIN   
+            ie: www.webdevil.ano
+    
+    Configure WebImps:     
+        $4 == IMP[{'[T/t]rue, [START_PORT, END_PORT]'|[F/f]alse}]
+            ie: 'True, 81, 88'
+            ie: False            
+
+    Select path to your local website files:
+        $5 == WWW_LOCAL_PATH 
+            ie: www
+
+    Select the executable cgi path:
+        $6 == CGI_LOCAL_PATH
+            ie: www/vodou
+
+    Select debugging:
+        $7 == DEBUG[{[T/t]rue|[F/f]alse]}]
+            ie: True
+            ie: False
+

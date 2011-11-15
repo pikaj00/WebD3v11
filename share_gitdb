@@ -1,0 +1,4 @@
+#!/bin/bash
+gitdb_ip=`cat conf/gitd_ip`
+gitdb_owner=`cat conf/gitd_name`
+echo "$gitdb_owner">gitdb/"$gitdb_ip" 

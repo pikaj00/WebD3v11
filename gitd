@@ -1,0 +1,5 @@
+#!/bin/bash
+# usage: bash gitd
+repodir="$(dirname $0)"
+touch "$repodir"/.git/git-daemon-export-ok
+exec git daemon --listen="$(cat "$repodir"/conf/gitd_ip)" --base-path="$(cat "$repodir"/conf/gitd_basepath)"

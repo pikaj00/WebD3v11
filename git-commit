@@ -1,0 +1,6 @@
+#!/bin/bash
+# usage: ./git-commit
+git add configure git-commit gitd README www WebDevil share_gitdb gitdb
+git checkout conf
+git commit
+test -x /usr/lib/git-core/git-update-server-info && /usr/lib/git-core/git-update-server-info
