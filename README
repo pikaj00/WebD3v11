@@ -15,7 +15,8 @@ ideas, and freemarket.
 1.) ./configure
 2.) ./share_gitdb
 3.) ip addr add "`cat conf/gitd_ip`"/32 dev lo &
-4.) email d3v11 at webdevil@d3v11.ano :-)
+4.) ./gitd &
+5.) email d3v11: webdevil@d3v11.ano | d3v11@d3v11.ano
 
 SYNOPSIS:
     
