@@ -212,13 +212,11 @@ if SERVER_PORT != sIMP:
                 self.wfile.write('<html><META HTTP-EQUIV="REFRESH" CONTENT="0; URL=http://'+SERVER_DOMAIN+':'+str(cPORTS)+PATH+'"></html>')
                 cPORTS+=1
 
-        DevilDaemon = BaseHTTPServer.HTTPServer((SERVER_ADDRESS, SERVER_PORT), WebDevil)
+    DevilDaemon = BaseHTTPServer.HTTPServer((SERVER_ADDRESS, SERVER_PORT), WebDevil)
     try:
         DevilDaemon.serve_forever()
     except:
         os.system('pkill WebImp')
 else:
-    try:
-        raw_input('WebDevil: press enter to exit\n')
-    except:
-        os.system('pkill WebDevil')
+    raw_input('WebDevil: press enter to exit\n')
+    os.system('pkill WebDevil')
