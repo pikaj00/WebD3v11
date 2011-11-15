@@ -41,7 +41,7 @@ SYNOPSIS:
 
     Select the executable cgi path:
         $6 == CGI_LOCAL_PATH
-            ie: www/vodou
+            ie: /vodou
 
     Select debugging:
         $7 == DEBUG[{[T/t]rue|[F/f]alse]}]
