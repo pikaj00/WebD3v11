@@ -9,7 +9,8 @@
 WebDevil is a decentralized webserver system that aims to keep
 webserver code open, powerful, and easy to redistribute. By
 sharing your webdevil gitdb with others you help to ensure this
-and keep the power in the hands of the people and freemarket.
+and keep the power in the hands of developers, people sharing
+ideas, and freemarket.
 
 1.) ./configure
 2.) ./share_gitdb
